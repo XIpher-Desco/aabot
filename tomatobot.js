@@ -15,11 +15,10 @@ var fs = require('fs');
 fs.readFile('./discord_token', 'utf8', function (err, text) {
     console.log('text file!');
     console.log(text);
-
-	const token = text;
-	// log our bot in
-	bot.login(token);
+    console.log('error!?');
+    console.log(err);
 });
+const token = '';
 
 // the ready event is vital, it means that your bot will only start reacting to information
 // from Discord _after_ ready is emitted.
@@ -129,3 +128,5 @@ LoginMonitoring.prototype.unsetEventListener = function(botClient){
 // 	}
 // });
 
+// log our bot in
+bot.login(token);

@@ -15,8 +15,6 @@ var fs = require('fs');
 fs.readFile('./discord_token', 'utf8', function (err, text) {
     console.log('text file!');
     console.log(text);
-    console.log('error!?');
-	console.log(err);
 
 	const token = text;
 	// log our bot in

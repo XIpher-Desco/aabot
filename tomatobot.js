@@ -6,24 +6,21 @@
 
 // import the discord.js module
 const Discord = require('discord.js');
-
 // create an instance of a Discord Client, and call it bot
 const bot = new Discord.Client();
 
+googleTranslateApiKey = "";
+const googleTranslate = require('google-translate')(googleTranslateApiKey);
+var translateChannnels = [];
 // the token of your bot - https://discordapp.com/developers/applications/me
-var fs = require('fs');
-fs.readFile('./discord_token', 'utf8', function (err, text) {
-    console.log('text file!');
-    console.log(text);
-    console.log('error!?');
-    console.log(err);
-});
 const token = '';
 
 // the ready event is vital, it means that your bot will only start reacting to information
 // from Discord _after_ ready is emitted.
 var generalChannel;//ジェネラルのチャンネル
 var testcanChannel;//ボットテスト用サーバーのテストチャンネル（他チャンネルテスト用）
+const regex_m = /\<[^\b\s]+/g; // removes mentions
+const regex_w = /s^\s+|\s+$|\s+(?=\s)/g; // remove duplicate and trailing spaces
 
 LoginMonitoring = function(){
 
@@ -39,37 +36,74 @@ bot.on('ready', () => {
 			testcanChannel = value;
 		}
 	});
-	generalChannel.sendMessage('ボットがオンラインになりました');
+	generalChannel.send('ボットがオンラインになりました');
 	LMC.init(generalChannel,1);//ログイン監視クラスの初期化
 	if(LMC.isMonitoring()!==0 && LMC.isMonitoringEvent()===0){
 		LMC.setEventListener(bot);
-		generalChannel.sendMessage('監視開始');
+		generalChannel.send('監視開始');
 	}
 });
 
 // create an event listener for messages
 bot.on('message', message => {
-  // if the message is "ping",
-  if (message.content === 'ping') {
-    // send "pong" to the same channel.
-    message.channel.sendMessage('pong');
-  }
-  if (message.content === 'マジやばくね？'){
-  	message.channel.sendMessage('マジやばい！');
-  }
-  if (message.content === 'とまと'){
-  	message.channel.sendMessage(':tomato:');
-  }
-  if (message.content === 'what is my id'){
-  	message.channel.sendMessage( message.author.username +'\'s id is '+message.author.id);
-  }
-  if (message.content === 'monitoring on'){
-  	message.channel.sendMessage(LMC.changeMonitoring(message.author.id,1));
-  }
-  if (message.content === 'monitoring off'){
-  	message.channel.sendMessage(LMC.changeMonitoring(message.author.id,0));
-  }
+	// remove mention content
+	var content = message.content.replace(regex_m,'').replace(regex_w,'').trim();
+	if (content === 'とまと'){
+		message.channel.send(':tomato:');
+	}
+	if (content === 'what is my id'){
+		message.channel.send( message.author.username +'\'s id is '+message.author.id);
+	}
+	if (content === 'monitoring on'){
+		message.channel.send(LMC.changeMonitoring(message.author.id,1));
+	}
+	if (content === 'monitoring off'){
+		message.channel.send(LMC.changeMonitoring(message.author.id,0));
+	}
+
+	if (content === 'translate on'){
+		if (message.author.id === '168036016333127680'){
+			if(translateChannnels.indexOf(message.channel.id) == -1){
+				translateChannnels.push(message.channel.id);
+				message.channel.send(message.channel.name + "を自動翻訳チャンネルとして登録しました。");
+			}
+		}
+	}
+	if (content === 'translate off'){
+		if (message.author.id === '168036016333127680'){
+			if(translateChannnels.indexOf(message.channel.id) != -1){
+				translateChannnels.splice((translateChannnels.indexOf(message.channel.id),1));
+				message.channel.send(message.channel.name + "を自動翻訳チャンネルから削除しました。");
+			}
+		}
+	}
+
+	if (translateChannnels.indexOf(message.channel.id) != -1 && bot.user.id !== message.author.id ){
+		// 何言語かを検出
+		googleTranslate.detectLanguage(content, function(err, detection) {
+			var translateLanguage = 'ja';
+			if (detection.language == 'ja'){
+				translateLanguage = 'en';
+			}
+			// 検出した言語が日本語以外なら翻訳
+			googleTranslate.translate(content, translateLanguage, function(err, translation) {
+				console.log(translation.translatedText);
+				// メンション作成形式は<@!281131536655581186>
+				// var userMention = "<@!"+message.author.id+">";
+				var userMention = message.author.username;
+				// 引用文作成
+				var authorSaid = "\n```"+ content + '```\n'
+				//var translatedText = 'You used language is ' + detection.language +"\n in Japanese - " + translation.translatedText;
+				var translatedText = translation.translatedText;
+				// message.reply(authorSaid + translatedText);
+				message.channel.send(userMention + authorSaid + translatedText);
+			});
+		});
+	}
 });
+
+// チャンネル制御クラス（許可とか）
+
 
 //モニタリングclass(presence)
 
@@ -105,7 +139,7 @@ LoginMonitoring.prototype.eventListener = function(oldMember,newMember) {
 	//オフラインからオンラインになったときに発動
 	if(oldMember.presence.status != newMember.presence.status){
 		if(oldMember.presence.status === 'offline' && newMember.presence.status !== 'offline'){
-			generalChannel.sendMessage(oldMember.user.username+'がオンラインになりました');//気持ち悪い
+			generalChannel.send(oldMember.user.username+'がオンラインになりました');//気持ち悪い
 		}
 	}
 };
@@ -129,4 +163,7 @@ LoginMonitoring.prototype.unsetEventListener = function(botClient){
 // });
 
 // log our bot in
+bot.on("error", error => {
+	console.log(error);
+})
 bot.login(token);

@@ -12,7 +12,7 @@ const bot = new Discord.Client();
 const fs = require('fs');
 var tokenJson = JSON.parse(fs.readFileSync('../token.json', 'utf8'));
 const googleTranslateApiKey = tokenJson["googleTranslateApiKey"];
-const discordToken = tokenJson["discordtoken"];
+const discordToken = tokenJson["discordTokenNode"];
 const googleTranslate = require('google-translate')(googleTranslateApiKey);
 var translateChannnels = [];
 // the token of your bot - https://discordapp.com/developers/applications/me

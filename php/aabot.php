@@ -3,7 +3,7 @@
 include __DIR__.'/vendor/autoload.php';
 
 $tokenStr = file_get_contents("../token.json");
-$discordToken = json_decode($tokenStr)['discordtoken'];
+$discordToken = json_decode($tokenStr)->discordtoken;
 
 $discord = new \Discord\Discord([
     'token' => $discordToken, // ←作成したBotのTokenを入力してね

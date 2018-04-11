@@ -84,6 +84,8 @@ bot.on('message', message => {
 	if (translateChannnels.indexOf(message.channel.id) != -1 && bot.user.id !== message.author.id ){
 		// 何言語かを検出
 		googleTranslate.detectLanguage(content, function(err, detection) {
+			console.log(err);
+			console.log(detection);
 			var translateLanguage = 'ja';
 			if (detection.language == 'ja'){
 				translateLanguage = 'en';

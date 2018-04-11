@@ -9,11 +9,14 @@ const Discord = require('discord.js');
 // create an instance of a Discord Client, and call it bot
 const bot = new Discord.Client();
 
-googleTranslateApiKey = "";
+const fs = require('fs');
+var tokenJson = JSON.parse(fs.readFileSync('../token.json', 'utf8'));
+const googleTranslateApiKey = tokenJson["googleTranslateApiKey"];
+const discordToken = tokenJson["discordtoken"];
 const googleTranslate = require('google-translate')(googleTranslateApiKey);
 var translateChannnels = [];
 // the token of your bot - https://discordapp.com/developers/applications/me
-const token = '';
+
 
 // the ready event is vital, it means that your bot will only start reacting to information
 // from Discord _after_ ready is emitted.
@@ -166,4 +169,4 @@ LoginMonitoring.prototype.unsetEventListener = function(botClient){
 bot.on("error", error => {
 	console.log(error);
 })
-bot.login(token);
+bot.login(discordToken);

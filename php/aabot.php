@@ -28,7 +28,7 @@ $discord->on('ready', function ($discord) {
     // Listen for events here
     $discord->on('message', function ($message){
         var_dump($message->author->username);
-        if ({$message->author->username != "AAdiscobot"){
+        if ($message->author->username != "AAdiscobot"){
             # 言語検出
             $detectresult = $translate->detectLanguage($massage->content);
             echo "Is {$result[languageCode]}";

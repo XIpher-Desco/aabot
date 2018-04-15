@@ -14,7 +14,54 @@ var tokenJson = JSON.parse(fs.readFileSync('../token.json', 'utf8'));
 const googleTranslateApiKey = tokenJson["googleTranslateApiKey"];
 const discordToken = tokenJson["discordTokenNode"];
 const googleTranslate = require('google-translate')(googleTranslateApiKey);
-var translateChannnels = [];
+
+class TranslateChannels{
+	channels = [];
+	constructor(){
+		const translateChannelsFileDir = "../translateChannels.json";
+
+		//ファイルから翻訳Channelを読み込み
+		fs.access(translateChannelsFileDir, function (err) {
+			if (err) {
+				if (err.code === 'ENOENT') {
+					console.log('translateChannelsFileDir not exists!!');
+				}
+				else {
+					console.error(err);
+					process.exit(1);
+				}
+			}
+			else {
+				var translateChannelsFile = JSON.parse(fs.readFileSync(translateChannelsFileDir));
+				this.channels = translateChannelsFile;
+			}
+		});
+	};
+
+	isTranslateChannel = function(channelId){
+		return this.channels.indexOf(channelId) != -1;
+	};
+	addChannel = function(channelId){
+		if(!this.isTranslateChannel(channelId)){
+			this.channels.push(channelId);
+		}
+		this.saveTranslateChannels();
+	};
+	removeChannel = function(channelId){
+		if(this.isTranslateChannel(channelId)){
+			this.channels.splice((this.channels.indexOf(channelId),1));
+		}
+		this.saveTranslateChannels();
+	};
+	saveTranslateChannels = function(){
+		const channelsJsonStr = JSON.stringify(this.channels);
+		fs.writeFile(translateChannelsFileDir, channelsJsonStr);
+	};
+}
+
+const translateChannels = new TranslateChannels();
+//var translateChannels = [];
+
 // the token of your bot - https://discordapp.com/developers/applications/me
 
 
@@ -23,7 +70,7 @@ var translateChannnels = [];
 var generalChannel;//ジェネラルのチャンネル
 var testcanChannel;//ボットテスト用サーバーのテストチャンネル（他チャンネルテスト用）
 const regex_m = /\<[^\b\s]+/g; // removes mentions
-const regex_w = /s^\s+|\s+$|\s+(?=\s)/g; // remove duplicate and trailing spaces
+const regex_w = /s^\s+|\s+$|\s+(?=\s)/g; // remove duplicate and trailing spaces	
 
 LoginMonitoring = function(){
 
@@ -66,22 +113,33 @@ bot.on('message', message => {
 
 	if (content === 'translate on'){
 		if (message.author.id === '168036016333127680'){
-			if(translateChannnels.indexOf(message.channel.id) == -1){
-				translateChannnels.push(message.channel.id);
-				message.channel.send(message.channel.name + "を自動翻訳チャンネルとして登録しました。");
-			}
+			translateChannels.addChannel(message.channel.id);
+			message.channel.send(message.channel.name + "を自動翻訳チャンネルとして登録しました。");
+			// if(translateChannels.indexOf(message.channel.id) == -1){
+			// 	translateChannels.push(message.channel.id);
+			// 	message.channel.send(message.channel.name + "を自動翻訳チャンネルとして登録しました。");
+			// }
+		}
+		else{
+			message.channel.send("その操作は許可されていません。");
 		}
 	}
 	if (content === 'translate off'){
 		if (message.author.id === '168036016333127680'){
-			if(translateChannnels.indexOf(message.channel.id) != -1){
-				translateChannnels.splice((translateChannnels.indexOf(message.channel.id),1));
-				message.channel.send(message.channel.name + "を自動翻訳チャンネルから削除しました。");
-			}
+			translateChannels.removeChannel(message.channel.id);
+			message.channel.send(message.channel.name + "を自動翻訳チャンネルから削除しました。");
+			// if(translateChannels.indexOf(message.channel.id) != -1){
+			// 	translateChannels.splice((translateChannels.indexOf(message.channel.id),1));
+			// 	message.channel.send(message.channel.name + "を自動翻訳チャンネルから削除しました。");
+			// }
+		}
+		else{
+			message.channel.send("その操作は許可されていません。");
 		}
 	}
 
-	if (translateChannnels.indexOf(message.channel.id) != -1 && bot.user.id !== message.author.id ){
+	//if (translateChannels.indexOf(message.channel.id) != -1 && bot.user.id !== message.author.id ){
+	if (translateChannels.isTranslateChannel(message.channel.id) && bot.user.id !== message.author.id ){
 		// 何言語かを検出
 		googleTranslate.detectLanguage(content, function(err, detection) {
 			console.log(err);

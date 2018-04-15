@@ -31,7 +31,7 @@ $discord->on('ready', function ($discord) {
         if ({$message->author->username != "AAdiscobot"){
             # 言語検出
             $detectresult = $translate->detectLanguage($massage->content);
-            echo "Is {$result['languageCode']}";
+            echo "Is {$result[languageCode]}";
 
             # 翻訳ターゲット選定 ja -> en, Other -> ja
             $translateLanguage = 'ja';

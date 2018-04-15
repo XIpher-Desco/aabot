@@ -23,21 +23,6 @@ class TranslateChannels{
 		//ファイルから翻訳Channelを読み込み
 		var translateChannelsFile = JSON.parse(fs.readFileSync(this.translateChannelsFileDir));
 		this.channels = translateChannelsFile;
-		// fs.access(this.translateChannelsFileDir, function (err) {
-		// 	if (err) {
-		// 		if (err.code === 'ENOENT') {
-		// 			console.log('translateChannelsFileDir not exists!!');
-		// 		}
-		// 		else {
-		// 			console.error(err);
-		// 			process.exit(1);
-		// 		}
-		// 	}
-		// 	else {
-		// 		var translateChannelsFile = JSON.parse(fs.readFileSync(this.translateChannelsFileDir));
-		// 		this.channels = translateChannelsFile;
-		// 	}
-		// });
 	};
 
 	isTranslateChannel(channelId){
@@ -50,11 +35,8 @@ class TranslateChannels{
 		this.saveTranslateChannels();
 	};
 	removeChannel(channelId){
-		console.log(this.channels.indexOf(channelId));
 		if(this.isTranslateChannel(channelId)){
-			console.log(this.channels.indexOf(channelId));
-			this.channels.splice((this.channels.indexOf(channelId),1));
-			console.log(this.channels.indexOf(channelId));
+			this.channels.splice(this.channels.indexOf(channelId),1);
 		}
 
 		this.saveTranslateChannels();
@@ -62,6 +44,7 @@ class TranslateChannels{
 	saveTranslateChannels(){
 		const channelsJsonStr = JSON.stringify(this.channels);
 		fs.writeFile(this.translateChannelsFileDir, channelsJsonStr);
+		console.log(this.channels);
 	};
 }
 

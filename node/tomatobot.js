@@ -19,7 +19,7 @@ class TranslateChannels{
 	constructor(){
 		this.channels = [];
 		this.translateChannelsFileDir = "../translateChannels.json";
-		
+
 		//ファイルから翻訳Channelを読み込み
 		var translateChannelsFile = JSON.parse(fs.readFileSync(this.translateChannelsFileDir));
 		this.channels = translateChannelsFile;
@@ -47,12 +47,14 @@ class TranslateChannels{
 		if(!this.isTranslateChannel(channelId)){
 			this.channels.push(channelId);
 		}
+		console.log(channelId +":"+ this.channels);
 		this.saveTranslateChannels();
 	};
 	removeChannel(channelId){
 		if(this.isTranslateChannel(channelId)){
 			this.channels.splice((this.channels.indexOf(channelId),1));
 		}
+		onsole.log(channelId +":"+ this.channels);
 		this.saveTranslateChannels();
 	};
 	saveTranslateChannels(){
@@ -117,10 +119,6 @@ bot.on('message', message => {
 		if (message.author.id === '168036016333127680'){
 			translateChannels.addChannel(message.channel.id);
 			message.channel.send(message.channel.name + "を自動翻訳チャンネルとして登録しました。");
-			// if(translateChannels.indexOf(message.channel.id) == -1){
-			// 	translateChannels.push(message.channel.id);
-			// 	message.channel.send(message.channel.name + "を自動翻訳チャンネルとして登録しました。");
-			// }
 		}
 		else{
 			message.channel.send("その操作は許可されていません。");
@@ -130,10 +128,6 @@ bot.on('message', message => {
 		if (message.author.id === '168036016333127680'){
 			translateChannels.removeChannel(message.channel.id);
 			message.channel.send(message.channel.name + "を自動翻訳チャンネルから削除しました。");
-			// if(translateChannels.indexOf(message.channel.id) != -1){
-			// 	translateChannels.splice((translateChannels.indexOf(message.channel.id),1));
-			// 	message.channel.send(message.channel.name + "を自動翻訳チャンネルから削除しました。");
-			// }
 		}
 		else{
 			message.channel.send("その操作は許可されていません。");

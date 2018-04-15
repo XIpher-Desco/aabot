@@ -38,22 +38,22 @@ class TranslateChannels{
 		});
 	};
 
-	isTranslateChannel = function(channelId){
+	isTranslateChannel(channelId){
 		return this.channels.indexOf(channelId) != -1;
 	};
-	addChannel = function(channelId){
+	addChannel(channelId){
 		if(!this.isTranslateChannel(channelId)){
 			this.channels.push(channelId);
 		}
 		this.saveTranslateChannels();
 	};
-	removeChannel = function(channelId){
+	removeChannel(channelId){
 		if(this.isTranslateChannel(channelId)){
 			this.channels.splice((this.channels.indexOf(channelId),1));
 		}
 		this.saveTranslateChannels();
 	};
-	saveTranslateChannels = function(){
+	saveTranslateChannels(){
 		const channelsJsonStr = JSON.stringify(this.channels);
 		fs.writeFile(translateChannelsFileDir, channelsJsonStr);
 	};

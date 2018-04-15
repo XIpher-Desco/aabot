@@ -16,8 +16,8 @@ const discordToken = tokenJson["discordTokenNode"];
 const googleTranslate = require('google-translate')(googleTranslateApiKey);
 
 class TranslateChannels{
-	channels = [];
 	constructor(){
+		this.channels = [];
 		const translateChannelsFileDir = "../translateChannels.json";
 
 		//ファイルから翻訳Channelを読み込み

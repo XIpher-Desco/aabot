@@ -54,7 +54,7 @@ class TranslateChannels{
 		if(this.isTranslateChannel(channelId)){
 			this.channels.splice((this.channels.indexOf(channelId),1));
 		}
-		onsole.log(channelId +":"+ this.channels);
+		console.log(channelId +":"+ this.channels);
 		this.saveTranslateChannels();
 	};
 	saveTranslateChannels(){

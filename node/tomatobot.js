@@ -18,10 +18,10 @@ const googleTranslate = require('google-translate')(googleTranslateApiKey);
 class TranslateChannels{
 	constructor(){
 		this.channels = [];
-		const translateChannelsFileDir = "../translateChannels.json";
+		this.translateChannelsFileDir = "../translateChannels.json";
 
 		//ファイルから翻訳Channelを読み込み
-		fs.access(translateChannelsFileDir, function (err) {
+		fs.access(this.translateChannelsFileDir, function (err) {
 			if (err) {
 				if (err.code === 'ENOENT') {
 					console.log('translateChannelsFileDir not exists!!');
@@ -32,7 +32,7 @@ class TranslateChannels{
 				}
 			}
 			else {
-				var translateChannelsFile = JSON.parse(fs.readFileSync(translateChannelsFileDir));
+				var translateChannelsFile = JSON.parse(fs.readFileSync(this.translateChannelsFileDir));
 				this.channels = translateChannelsFile;
 			}
 		});
@@ -55,7 +55,7 @@ class TranslateChannels{
 	};
 	saveTranslateChannels(){
 		const channelsJsonStr = JSON.stringify(this.channels);
-		fs.writeFile(translateChannelsFileDir, channelsJsonStr);
+		fs.writeFile(this.translateChannelsFileDir, channelsJsonStr);
 	};
 }
 

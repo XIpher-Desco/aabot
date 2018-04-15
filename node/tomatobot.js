@@ -19,23 +19,25 @@ class TranslateChannels{
 	constructor(){
 		this.channels = [];
 		this.translateChannelsFileDir = "../translateChannels.json";
-
+		
 		//ファイルから翻訳Channelを読み込み
-		fs.access(this.translateChannelsFileDir, function (err) {
-			if (err) {
-				if (err.code === 'ENOENT') {
-					console.log('translateChannelsFileDir not exists!!');
-				}
-				else {
-					console.error(err);
-					process.exit(1);
-				}
-			}
-			else {
-				var translateChannelsFile = JSON.parse(fs.readFileSync(this.translateChannelsFileDir));
-				this.channels = translateChannelsFile;
-			}
-		});
+		var translateChannelsFile = JSON.parse(fs.readFileSync(this.translateChannelsFileDir));
+		this.channels = translateChannelsFile;
+		// fs.access(this.translateChannelsFileDir, function (err) {
+		// 	if (err) {
+		// 		if (err.code === 'ENOENT') {
+		// 			console.log('translateChannelsFileDir not exists!!');
+		// 		}
+		// 		else {
+		// 			console.error(err);
+		// 			process.exit(1);
+		// 		}
+		// 	}
+		// 	else {
+		// 		var translateChannelsFile = JSON.parse(fs.readFileSync(this.translateChannelsFileDir));
+		// 		this.channels = translateChannelsFile;
+		// 	}
+		// });
 	};
 
 	isTranslateChannel(channelId){

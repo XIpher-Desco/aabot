@@ -47,14 +47,16 @@ class TranslateChannels{
 		if(!this.isTranslateChannel(channelId)){
 			this.channels.push(channelId);
 		}
-		console.log(channelId +":"+ this.channels);
 		this.saveTranslateChannels();
 	};
 	removeChannel(channelId){
+		console.log(this.channels.indexOf(channelId));
 		if(this.isTranslateChannel(channelId)){
+			console.log(this.channels.indexOf(channelId));
 			this.channels.splice((this.channels.indexOf(channelId),1));
+			console.log(this.channels.indexOf(channelId));
 		}
-		console.log(channelId +":"+ this.channels);
+
 		this.saveTranslateChannels();
 	};
 	saveTranslateChannels(){
@@ -138,15 +140,15 @@ bot.on('message', message => {
 	if (translateChannels.isTranslateChannel(message.channel.id) && bot.user.id !== message.author.id ){
 		// 何言語かを検出
 		googleTranslate.detectLanguage(content, function(err, detection) {
-			console.log(err);
-			console.log(detection);
+			// console.log(err);
+			// console.log(detection);
 			var translateLanguage = 'ja';
 			if (detection.language == 'ja'){
 				translateLanguage = 'en';
 			}
 			// 検出した言語が日本語以外なら翻訳
 			googleTranslate.translate(content, translateLanguage, function(err, translation) {
-				console.log(translation.translatedText);
+				// console.log(translation.translatedText);
 				// メンション作成形式は<@!281131536655581186>
 				// var userMention = "<@!"+message.author.id+">";
 				var userMention = message.author.username;

@@ -26,7 +26,7 @@ $discord->on('ready', function ($discord) {
     echo "Bot is ready.", PHP_EOL;
 
     // Listen for events here
-    $discord->on('message', function ($message) {
+    $discord->on('message', function ($message)) {
         var_dump({$message->author->username);
         if ({$message->author->username != "AAdiscobot"){
             # 言語検出
